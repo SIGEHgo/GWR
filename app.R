@@ -6,8 +6,19 @@ library(pdp)
 library(DescTools)
 library(shinyWidgets)  
 
-source("binary_logistic_regression.R")
-source("Multinomial carga.R")
+#source("binary_logistic_regression.R")
+#source("Multinomial carga.R")
+
+
+variables = names(binary.data2025)[!names(binary.data2025) %in% c("P19", "SbjNum", "Latitude", "Longitude", "PESOF", "P20", "edad")]
+
+variables_limpias = variables |>
+  gsub("_", " ", x = _) |>
+  stringr::str_squish() |>
+  tools::toTitleCase()
+
+diccionario =  setNames(variables, variables_limpias)
+
 
 ui = page_sidebar(
   theme = bs_theme(
@@ -58,7 +69,8 @@ ui = page_sidebar(
     selectInput(
       inputId = "variable",
       label = "Selecciona una variable",
-      choices = names(binary.data2025)[!names(binary.data2025) %in% c("P19", "SbjNum", "Latitude", "Longitude", "PESOF", "P20", "edad")]
+      choices = diccionario,
+      selectize = F
     ),
     p(textOutput("descripciones")), 
     actionButton("modal", "Más información")

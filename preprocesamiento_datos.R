@@ -1,6 +1,7 @@
 library(sf)
 #zonas = readxl::read_excel("../../Reutilizables/regiones/Banco de datos infografias _Eduardo.xlsx")
-zonas = readxl::read_excel("../../Importantes_documentos_usar/Banco de datos infografias _Eduardo.xlsx")
+#zonas = readxl::read_excel("../../Importantes_documentos_usar/Banco de datos infografias _Eduardo.xlsx")
+zonas = readxl::read_excel("Extras/Banco de datos infografias _Eduardo.xlsx")
 zonas = zonas |> 
   dplyr::filter(!is.na(Región)) |> 
   dplyr::select(Municipio, `Zona Metropolitana`) |> 
@@ -46,35 +47,36 @@ variables_usadas2025=sav_2025 |> names()
 
 
 
-sav_2025 = sav_2025 |> 
-  dplyr::mutate(
-    P19 = factor(x = P19, levels = c(levels(P19)[length(levels(P19))], levels(P19)[1:(length(levels(P19)) - 1)])),
-    ESC = factor(x = ESC, levels = c(levels(ESC)[length(levels(ESC))], levels(ESC)[1:(length(levels(ESC)) - 1)])),
-                OCUP = factor(x = OCUP, levels = c(levels(OCUP)[length(levels(OCUP))], levels(OCUP)[1:(length(levels(OCUP)) - 1)])),
-                INGR = factor(x = INGR, levels = c(levels(INGR)[length(levels(INGR))], levels(INGR)[1:(length(levels(INGR)) - 1)])),
-                P15 = factor(x = P15, levels = c(levels(P15)[length(levels(P15))], levels(P15)[1:(length(levels(P15)) - 1)])),
-                P16 = factor(x = P16, levels = c(levels(P16)[length(levels(P16))], levels(P16)[1:(length(levels(P16)) - 1)])),
-                P27 = factor(x = P27, levels = c(levels(P27)[length(levels(P27))], levels(P27)[1:(length(levels(P27)) - 1)])),
-                P30A1 = factor(x = P30A1, levels = c(levels(P30A1)[length(levels(P30A1))], levels(P30A1)[1:(length(levels(P30A1)) - 1)])),
-                P39 = factor(x = P39, levels = c(levels(P39)[length(levels(P39))], levels(P39)[1:(length(levels(P39)) - 1)])),
-                P40 = factor(x = P40, levels = c(levels(P40)[length(levels(P40))], levels(P40)[1:(length(levels(P40)) - 1)])),
-                P45 = factor(x = P45, levels = c(levels(P45)[length(levels(P45))], levels(P45)[1:(length(levels(P45)) - 1)])),
-                P51 = factor(x = P51, levels = c(levels(P51)[length(levels(P51))], levels(P51)[1:(length(levels(P51)) - 1)])),
-                P85 = factor(x = P85, levels = c(levels(P85)[length(levels(P85))], levels(P85)[1:(length(levels(P85)) - 1)])),
-                P86A1 = factor(x = P86A1, levels = c(levels(P86A1)[length(levels(P86A1))], levels(P86A1)[1:(length(levels(P86A1)) - 1)])),
-                P99A1 = factor(x = P99A1, levels = c(levels(P99A1)[length(levels(P99A1))], levels(P99A1)[1:(length(levels(P99A1)) - 1)])),
-                P8A1 = factor(x = P8A1, levels = c(levels(P8A1)[length(levels(P8A1))], levels(P8A1)[1:(length(levels(P8A1)) - 1)])),
-                P8A2 = factor(x = P8A2, levels = c(levels(P8A2)[length(levels(P8A2))], levels(P8A2)[1:(length(levels(P8A2)) - 1)])),
-                P9 = factor(x = P9, levels = c(levels(P9)[length(levels(P9))], levels(P9)[1:(length(levels(P9)) - 1)])),
-                P12 = factor(x = P12, levels = c(levels(P12)[length(levels(P12))], levels(P12)[1:(length(levels(P12)) - 1)])),
-                P26 = factor(x = P26, levels = c(levels(P26)[length(levels(P26))], levels(P26)[1:(length(levels(P26)) - 1)]))
-  )
+# sav_2025 = sav_2025 |> 
+#   dplyr::mutate(
+#     P19 = factor(x = P19, levels = c(levels(P19)[length(levels(P19))], levels(P19)[1:(length(levels(P19)) - 1)])),
+#     ESC = factor(x = ESC, levels = c(levels(ESC)[length(levels(ESC))], levels(ESC)[1:(length(levels(ESC)) - 1)])),
+#                 OCUP = factor(x = OCUP, levels = c(levels(OCUP)[length(levels(OCUP))], levels(OCUP)[1:(length(levels(OCUP)) - 1)])),
+#                 INGR = factor(x = INGR, levels = c(levels(INGR)[length(levels(INGR))], levels(INGR)[1:(length(levels(INGR)) - 1)])),
+#                 P15 = factor(x = P15, levels = c(levels(P15)[length(levels(P15))], levels(P15)[1:(length(levels(P15)) - 1)])),
+#                 P16 = factor(x = P16, levels = c(levels(P16)[length(levels(P16))], levels(P16)[1:(length(levels(P16)) - 1)])),
+#                 P27 = factor(x = P27, levels = c(levels(P27)[length(levels(P27))], levels(P27)[1:(length(levels(P27)) - 1)])),
+#                 P30A1 = factor(x = P30A1, levels = c(levels(P30A1)[length(levels(P30A1))], levels(P30A1)[1:(length(levels(P30A1)) - 1)])),
+#                 P39 = factor(x = P39, levels = c(levels(P39)[length(levels(P39))], levels(P39)[1:(length(levels(P39)) - 1)])),
+#                 P40 = factor(x = P40, levels = c(levels(P40)[length(levels(P40))], levels(P40)[1:(length(levels(P40)) - 1)])),
+#                 P45 = factor(x = P45, levels = c(levels(P45)[length(levels(P45))], levels(P45)[1:(length(levels(P45)) - 1)])),
+#                 P51 = factor(x = P51, levels = c(levels(P51)[length(levels(P51))], levels(P51)[1:(length(levels(P51)) - 1)])),
+#                 P85 = factor(x = P85, levels = c(levels(P85)[length(levels(P85))], levels(P85)[1:(length(levels(P85)) - 1)])),
+#                 P86A1 = factor(x = P86A1, levels = c(levels(P86A1)[length(levels(P86A1))], levels(P86A1)[1:(length(levels(P86A1)) - 1)])),
+#                 P99A1 = factor(x = P99A1, levels = c(levels(P99A1)[length(levels(P99A1))], levels(P99A1)[1:(length(levels(P99A1)) - 1)])),
+#                 P8A1 = factor(x = P8A1, levels = c(levels(P8A1)[length(levels(P8A1))], levels(P8A1)[1:(length(levels(P8A1)) - 1)])),
+#                 P8A2 = factor(x = P8A2, levels = c(levels(P8A2)[length(levels(P8A2))], levels(P8A2)[1:(length(levels(P8A2)) - 1)])),
+#                 P9 = factor(x = P9, levels = c(levels(P9)[length(levels(P9))], levels(P9)[1:(length(levels(P9)) - 1)])),
+#                 P12 = factor(x = P12, levels = c(levels(P12)[length(levels(P12))], levels(P12)[1:(length(levels(P12)) - 1)])),
+#                 P26 = factor(x = P26, levels = c(levels(P26)[length(levels(P26))], levels(P26)[1:(length(levels(P26)) - 1)]))
+#   )
 
 
 ###########################
 
 #municipios=read_sf("../../Reutilizables/Cartografia/municipiosjair.shp")
-municipios = sf::read_sf("../../Importantes_documentos_usar/Municipios/municipiosjair.shp")
+#municipios = sf::read_sf("../../Importantes_documentos_usar/Municipios/municipiosjair.shp")
+municipios = sf::read_sf("Extras/municipiosjair.shp")
 municipios = municipios |>  
   dplyr::select(NOM_MUN, geometry)
 
@@ -160,29 +162,29 @@ sav_2024 = sav_2024 |>
 
 
 # Si se renombran ya funciona unicamente aplicando este codigo y tenemos todo igual
-sav_2024 = sav_2024 |> 
-  dplyr::mutate(
-    P19 = factor(x = P20, levels = c(levels(P20)[length(levels(P20))], levels(P20)[1:(length(levels(P20)) - 1)])),
-    ESC = factor(x = ESC, levels = c(levels(ESC)[length(levels(ESC))], levels(ESC)[1:(length(levels(ESC)) - 1)])),
-                OCUP = factor(x = OCUP, levels = c(levels(OCUP)[length(levels(OCUP))], levels(OCUP)[1:(length(levels(OCUP)) - 1)])),
-                INGR = factor(x = INGR, levels = c(levels(INGR)[length(levels(INGR))], levels(INGR)[1:(length(levels(INGR)) - 1)])),
-                P15 = factor(x = P15, levels = c(levels(P15)[length(levels(P15))], levels(P15)[1:(length(levels(P15)) - 1)])),
-                P16 = factor(x = P16, levels = c(levels(P16)[length(levels(P16))], levels(P16)[1:(length(levels(P16)) - 1)])),
-                P27 = factor(x = P27, levels = c(levels(P27)[length(levels(P27))], levels(P27)[1:(length(levels(P27)) - 1)])),
-                P30A1 = factor(x = P30A1, levels = c(levels(P30A1)[length(levels(P30A1))], levels(P30A1)[1:(length(levels(P30A1)) - 1)])),
-                P39 = factor(x = P39, levels = c(levels(P39)[length(levels(P39))], levels(P39)[1:(length(levels(P39)) - 1)])),
-                P40 = factor(x = P40, levels = c(levels(P40)[length(levels(P40))], levels(P40)[1:(length(levels(P40)) - 1)])),
-                P45 = factor(x = P45, levels = c(levels(P45)[length(levels(P45))], levels(P45)[1:(length(levels(P45)) - 1)])),
-                P51 = factor(x = P51, levels = c(levels(P51)[length(levels(P51))], levels(P51)[1:(length(levels(P51)) - 1)])),
-                P85 = factor(x = P85, levels = c(levels(P85)[length(levels(P85))], levels(P85)[1:(length(levels(P85)) - 1)])),
-                P86A1 = factor(x = P86A1, levels = c(levels(P86A1)[length(levels(P86A1))], levels(P86A1)[1:(length(levels(P86A1)) - 1)])),
-                P99A1 = factor(x = P99A1, levels = c(levels(P99A1)[length(levels(P99A1))], levels(P99A1)[1:(length(levels(P99A1)) - 1)])),
-                P8A1 = factor(x = P8A1, levels = c(levels(P8A1)[length(levels(P8A1))], levels(P8A1)[1:(length(levels(P8A1)) - 1)])),
-                P8A2 = factor(x = P8A2, levels = c(levels(P8A2)[length(levels(P8A2))], levels(P8A2)[1:(length(levels(P8A2)) - 1)])),
-                P9 = factor(x = P9, levels = c(levels(P9)[length(levels(P9))], levels(P9)[1:(length(levels(P9)) - 1)])),
-                P12 = factor(x = P12, levels = c(levels(P12)[length(levels(P12))], levels(P12)[1:(length(levels(P12)) - 1)])),
-                P26 = factor(x = P26, levels = c(levels(P26)[length(levels(P26))], levels(P26)[1:(length(levels(P26)) - 1)]))
-  )
+# sav_2024 = sav_2024 |> 
+#   dplyr::mutate(
+#     P19 = factor(x = P20, levels = c(levels(P20)[length(levels(P20))], levels(P20)[1:(length(levels(P20)) - 1)])),
+#     ESC = factor(x = ESC, levels = c(levels(ESC)[length(levels(ESC))], levels(ESC)[1:(length(levels(ESC)) - 1)])),
+#                 OCUP = factor(x = OCUP, levels = c(levels(OCUP)[length(levels(OCUP))], levels(OCUP)[1:(length(levels(OCUP)) - 1)])),
+#                 INGR = factor(x = INGR, levels = c(levels(INGR)[length(levels(INGR))], levels(INGR)[1:(length(levels(INGR)) - 1)])),
+#                 P15 = factor(x = P15, levels = c(levels(P15)[length(levels(P15))], levels(P15)[1:(length(levels(P15)) - 1)])),
+#                 P16 = factor(x = P16, levels = c(levels(P16)[length(levels(P16))], levels(P16)[1:(length(levels(P16)) - 1)])),
+#                 P27 = factor(x = P27, levels = c(levels(P27)[length(levels(P27))], levels(P27)[1:(length(levels(P27)) - 1)])),
+#                 P30A1 = factor(x = P30A1, levels = c(levels(P30A1)[length(levels(P30A1))], levels(P30A1)[1:(length(levels(P30A1)) - 1)])),
+#                 P39 = factor(x = P39, levels = c(levels(P39)[length(levels(P39))], levels(P39)[1:(length(levels(P39)) - 1)])),
+#                 P40 = factor(x = P40, levels = c(levels(P40)[length(levels(P40))], levels(P40)[1:(length(levels(P40)) - 1)])),
+#                 P45 = factor(x = P45, levels = c(levels(P45)[length(levels(P45))], levels(P45)[1:(length(levels(P45)) - 1)])),
+#                 P51 = factor(x = P51, levels = c(levels(P51)[length(levels(P51))], levels(P51)[1:(length(levels(P51)) - 1)])),
+#                 P85 = factor(x = P85, levels = c(levels(P85)[length(levels(P85))], levels(P85)[1:(length(levels(P85)) - 1)])),
+#                 P86A1 = factor(x = P86A1, levels = c(levels(P86A1)[length(levels(P86A1))], levels(P86A1)[1:(length(levels(P86A1)) - 1)])),
+#                 P99A1 = factor(x = P99A1, levels = c(levels(P99A1)[length(levels(P99A1))], levels(P99A1)[1:(length(levels(P99A1)) - 1)])),
+#                 P8A1 = factor(x = P8A1, levels = c(levels(P8A1)[length(levels(P8A1))], levels(P8A1)[1:(length(levels(P8A1)) - 1)])),
+#                 P8A2 = factor(x = P8A2, levels = c(levels(P8A2)[length(levels(P8A2))], levels(P8A2)[1:(length(levels(P8A2)) - 1)])),
+#                 P9 = factor(x = P9, levels = c(levels(P9)[length(levels(P9))], levels(P9)[1:(length(levels(P9)) - 1)])),
+#                 P12 = factor(x = P12, levels = c(levels(P12)[length(levels(P12))], levels(P12)[1:(length(levels(P12)) - 1)])),
+#                 P26 = factor(x = P26, levels = c(levels(P26)[length(levels(P26))], levels(P26)[1:(length(levels(P26)) - 1)]))
+#   )
 
 
 # library(sf)

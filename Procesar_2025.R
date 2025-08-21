@@ -264,35 +264,77 @@ A$confianza_gobernador <- as.factor(A$confianza_gobernador)
 
 ###Regresion
 
+# A = A |> 
+#   dplyr::mutate(zona_metropolitana = relevel(x = zona_metropolitana, ref = "Sin zona"),
+#                 Sexo = relevel(x = Sexo, ref = "Hombre"),
+#                 escolaridad = relevel(x = escolaridad, ref = "Preparatoria completa"),
+#                 ocupacion = relevel(x = ocupacion, ref = "No respuesta"),
+#                 nivel_socieconomico = relevel(x = nivel_socieconomico, ref = "Media"),
+#                 ingresos = relevel(x = ingresos, ref = "No sé"),
+#                 inseguridad_comparada_año_anterior = relevel(x = inseguridad_comparada_año_anterior, ref = "No sé"),
+#                 principal_problema_colonia = relevel(x = principal_problema_colonia, ref = "No sé"),
+#                 seguridad_publica = relevel(x = seguridad_publica, ref = "No sé"),
+#                 principal_delito = relevel(x = principal_delito, ref = "No sé"),
+#                 corrupcion_en_gobierno_estatal = relevel(x = corrupcion_en_gobierno_estatal, ref = "No sé"),
+#                 donde_hay_mas_corrupcion = relevel(x = donde_hay_mas_corrupcion, ref = "No sé"),
+#                 corrupcion_comparar_morena_con_pri = relevel(x = corrupcion_comparar_morena_con_pri, ref = "No sé"),
+#                 pobreza = relevel(x = pobreza, ref = "No sé"),
+#                 afectado_deterioro_calles_avenidas = relevel(x = afectado_deterioro_calles_avenidas, ref = "Sí"),
+#                 gobierno_ayuda_contra_deterioro_calles_avenidas = relevel(x = gobierno_ayuda_contra_deterioro_calles_avenidas, ref = "No sé"),
+#                 salario_suficiente = relevel(x = salario_suficiente, ref = "No sé"),
+#                 servicio_que_afecta_economia = relevel(x = servicio_que_afecta_economia, ref = "No sé"),
+#                 medio_de_comunicacion_informa_noticias = relevel(x = medio_de_comunicacion_informa_noticias, ref = "No sé"),
+#                 situacion_municipio = relevel(x = situacion_municipio, ref = "No sé"),
+#                 situacion_estado = relevel(x = situacion_estado, ref = "No sé"),
+#                 situacion_estado_comparado_año_anterior = relevel(x = situacion_estado_comparado_año_anterior, ref = "No sé"),
+#                 principal_problema_estado = relevel(x = principal_problema_estado, ref = "No sé"),
+#                 confianza_gobernador = relevel(x = confianza_gobernador, ref = "No sé"),
+#                 hogar_recibe_algun_ayuda_del_gobierno = relevel(x = hogar_recibe_algun_ayuda_del_gobierno, ref = "Sí, usted")
+#                 ) |> 
+#   dplyr::mutate(dplyr::across(tidyselect::where(is.factor), forcats::fct_drop))
+  
+
 A = A |> 
   dplyr::mutate(zona_metropolitana = relevel(x = zona_metropolitana, ref = "Sin zona"),
                 Sexo = relevel(x = Sexo, ref = "Hombre"),
-                escolaridad = relevel(x = escolaridad, ref = "Preparatoria completa"),
-                ocupacion = relevel(x = ocupacion, ref = "No respuesta"),
-                nivel_socieconomico = relevel(x = nivel_socieconomico, ref = "Media"),
-                ingresos = relevel(x = ingresos, ref = "No sé"),
-                inseguridad_comparada_año_anterior = relevel(x = inseguridad_comparada_año_anterior, ref = "No sé"),
-                principal_problema_colonia = relevel(x = principal_problema_colonia, ref = "No sé"),
-                seguridad_publica = relevel(x = seguridad_publica, ref = "No sé"),
-                principal_delito = relevel(x = principal_delito, ref = "No sé"),
-                corrupcion_en_gobierno_estatal = relevel(x = corrupcion_en_gobierno_estatal, ref = "No sé"),
+                escolaridad = relevel(x = escolaridad, ref = "Secundaria completa"),
+                ocupacion = relevel(x = ocupacion, ref = "Hogar"),
+                nivel_socieconomico = relevel(x = nivel_socieconomico, ref = "Baja"),
+                ingresos = relevel(x = ingresos, ref = "$1,751 - $7,500"),
+                inseguridad_comparada_año_anterior = relevel(x = inseguridad_comparada_año_anterior, ref = "Ha empeorado"),
+                principal_problema_colonia = relevel(x = principal_problema_colonia, ref = "Inseguridad"),
+                seguridad_publica = relevel(x = seguridad_publica, ref = "Ha empeorado"),
+                principal_delito = relevel(x = principal_delito, ref = "Robo en la calle"),
+                corrupcion_en_gobierno_estatal = relevel(x = corrupcion_en_gobierno_estatal, ref = "Mucha"),
                 donde_hay_mas_corrupcion = relevel(x = donde_hay_mas_corrupcion, ref = "No sé"),
-                corrupcion_comparar_morena_con_pri = relevel(x = corrupcion_comparar_morena_con_pri, ref = "No sé"),
-                pobreza = relevel(x = pobreza, ref = "No sé"),
+                corrupcion_comparar_morena_con_pri = relevel(x = corrupcion_comparar_morena_con_pri, ref = "Ha disminuido"),
+                pobreza = relevel(x = pobreza, ref = "Ha mejorado"),
                 afectado_deterioro_calles_avenidas = relevel(x = afectado_deterioro_calles_avenidas, ref = "Sí"),
-                gobierno_ayuda_contra_deterioro_calles_avenidas = relevel(x = gobierno_ayuda_contra_deterioro_calles_avenidas, ref = "No sé"),
-                salario_suficiente = relevel(x = salario_suficiente, ref = "No sé"),
-                servicio_que_afecta_economia = relevel(x = servicio_que_afecta_economia, ref = "No sé"),
-                medio_de_comunicacion_informa_noticias = relevel(x = medio_de_comunicacion_informa_noticias, ref = "No sé"),
-                situacion_municipio = relevel(x = situacion_municipio, ref = "No sé"),
-                situacion_estado = relevel(x = situacion_estado, ref = "No sé"),
-                situacion_estado_comparado_año_anterior = relevel(x = situacion_estado_comparado_año_anterior, ref = "No sé"),
-                principal_problema_estado = relevel(x = principal_problema_estado, ref = "No sé"),
-                confianza_gobernador = relevel(x = confianza_gobernador, ref = "No sé"),
-                hogar_recibe_algun_ayuda_del_gobierno = relevel(x = hogar_recibe_algun_ayuda_del_gobierno, ref = "Sí, usted")
+                gobierno_ayuda_contra_deterioro_calles_avenidas = relevel(x = gobierno_ayuda_contra_deterioro_calles_avenidas, ref = "Poco"),
+                salario_suficiente = relevel(x = salario_suficiente, ref = "No"),
+                servicio_que_afecta_economia = relevel(x = servicio_que_afecta_economia, ref = "Gasolina"),
+                medio_de_comunicacion_informa_noticias = relevel(x = medio_de_comunicacion_informa_noticias,  ref = "Televisión"),
+                facebook = relevel(x = facebook, ref = "No"),
+                whatsapp = relevel(x = whatsapp, ref = "No"),
+                instagram = relevel(x = instagram, ref = "No"),
+                tiktok = relevel(x = tiktok, ref = "No"),
+                youtube = relevel(x = youtube, ref = "No"),
+                twitter_X = relevel(x = twitter_X, ref = "No"),
+                television = relevel(x = television, ref = "No"),
+                radio = relevel(x = radio, ref = "No"),
+                periodicos = relevel(x = periodicos, ref = "No"),
+                situacion_municipio = relevel(x = situacion_municipio, ref = "Bien / Muy bien"),
+                situacion_estado = relevel(x = situacion_estado, ref = "Bien / Muy bien"),
+                situacion_estado_comparado_año_anterior = relevel(x = situacion_estado_comparado_año_anterior, ref = "Mejor"),
+                principal_problema_estado = relevel(x = principal_problema_estado, ref = "Empleo"),
+                principal_atributo_gobernador = relevel(x = principal_atributo_gobernador, ref = "Honestidad"),
+                confianza_gobernador = relevel(x = confianza_gobernador, ref = "Poca"),
+                hogar_recibe_algun_ayuda_del_gobierno = relevel(x = hogar_recibe_algun_ayuda_del_gobierno, ref = "No")
                 ) |> 
   dplyr::mutate(dplyr::across(tidyselect::where(is.factor), forcats::fct_drop))
-  
+
+
+
 
 
 

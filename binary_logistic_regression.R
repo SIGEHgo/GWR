@@ -53,10 +53,10 @@ source("homologar_respuestas_entre_años.R")
 ###### Inicia Enrique
 source("Procesar_2024.R")
 source("Procesar_2025.R")
-
-#### Termina
+#### Termina Enrique
 
 binary.data2024 = Pro_binary.data2024 |> 
+  dplyr::rename(P19 = P20) |> 
   dplyr::filter(P19%in%c("Aprueba","Desaprueba")) |> 
   dplyr::mutate(P19=factor(ifelse(P19=='Aprueba',1,0),levels=0:1))
 
@@ -87,8 +87,8 @@ coef_2025 = summary(mylogit2025)$coefficients |>  as.data.frame()
 #coeficientes_significantes2025=summary2025[["coefficients"]][summary2025[["coefficients"]][,4]<0.01,]
 
 #Pseudo- R cuadrada
-#library(DescTools)
-#PseudoR2_2025=PseudoR2(mylogit2025, which = c("CoxSnell","Nagelkerke","McFadden"))
+library(DescTools)
+PseudoR2_2025=PseudoR2(mylogit2025, which = c("CoxSnell","Nagelkerke","McFadden"))
 
 # pscl::pR2(mylogit)
 # logLik(mylogit)
@@ -135,7 +135,7 @@ coef_2024 = summary(mylogit2024)$coefficients |>  as.data.frame()
 
 #Pseudo- R cuadrada
 #library(DescTools)
-#PseudoR2_2025=PseudoR2(mylogit2024, which = c("CoxSnell","Nagelkerke","McFadden"))
+#PseudoR2_2024=PseudoR2(mylogit2024, which = c("CoxSnell","Nagelkerke","McFadden"))
 
 #coeficientes_full2025=summary2025$coefficients |> as.data.frame()
 #coeficientes_full2024=summary2024$coefficients |> as.data.frame()

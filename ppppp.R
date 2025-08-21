@@ -1,6 +1,6 @@
 library(pdp)
 # 2025
-var_seleccionada = "donde_hay_mas_corrupcion"
+var_seleccionada = "ocupacion"
 pdp_2025 = mylogit2025 |> 
   partial(pred.var = var_seleccionada, prob = T)|> 
   dplyr::arrange(dplyr::desc(yhat)) |> 
@@ -52,6 +52,41 @@ datos
 
 
 
-datos
+gg = ggplot(datos, aes(x = nombre, y = odds_ratio, fill = factor(años_datos))) +
+  geom_bar(stat = "identity", position = position_dodge()) +
+  scale_fill_manual(values = c("#691c32","#b38e5d")) + 
+  {
+    if (nrow(datos) < 12) {
+      geom_text(
+        aes(label = round(odds_ratio, 2), y = odds_ratio / 2),  
+        position = position_dodge(width = 0.9),
+        size = 4,
+        color = "white"
+      )
+    } else {
+      geom_text(
+        aes(label = round(odds_ratio, 2), y = odds_ratio / 2),  
+        position = position_dodge(width = 0.9),
+        size = 2,
+        color = "white"
+      )
+    }
+  } +
+  labs(x = gsub("_", " ", "Hola Hola") |> stringr::str_squish() |> tools::toTitleCase(), 
+       y = "Valor",
+       fill = "Año") +
+  theme_minimal(base_size = 12) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, colour = "black", face = "bold"),
+        axis.title.x = element_text(color = "black", face = "bold")) +
+  geom_hline(yintercept = 1, linetype = "dashed", color = "red")
+ggplotly(gg) |>  
+  config(
+    modeBarButtonsToRemove = list("select2d", "lasso2d","hoverClosestCartesian", "hoverCompareCartesian","toggleSpikelines"),
+    scrollZoom = TRUE,
+    displaylogo = FALSE,
+    doubleClick = "reset",
+    locale = "es"
+  ) 
 
 
+dplyr

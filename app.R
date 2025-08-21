@@ -6,8 +6,8 @@ library(pdp)
 library(DescTools)
 library(shinyWidgets)  
 
-source("binary_logistic_regression.R")
-source("Multinomial carga.R")
+#source("binary_logistic_regression.R")
+#source("Multinomial carga.R")
 
 ui = page_sidebar(
   theme = bs_theme(
@@ -23,8 +23,7 @@ ui = page_sidebar(
     heading_font = font_google("Montserrat"),
     code_font = font_google("Fira Code")
   ),
-  #title = "Visualizador Regresión Logística Multivariada",
-  
+
   tags$style(HTML("
     html, body, .container-fluid {
       height: 100%;
@@ -204,7 +203,8 @@ server = function(input, output, session) {
     datos = dplyr::bind_rows(datos_2025, datos_2024)
     datos = datos |> 
       dplyr::relocate(años_datos, .after = nombre) |> 
-      dplyr::mutate(odds_ratio = dplyr::if_else(condition = is.na(odds_ratio), true = 1, false = odds_ratio))
+      dplyr::mutate(odds_ratio = dplyr::if_else(condition = is.na(odds_ratio), true = 1, false = odds_ratio),
+                    odds_ratio = dplyr::if_else(condition = odds_ratio >= 10, true = NA, false = odds_ratio))
     
     datos
 
@@ -252,7 +252,8 @@ server = function(input, output, session) {
       dplyr::select(-id) |> 
       dplyr::relocate(odds_ratio, .before  = yhat) |> 
       dplyr::relocate(grupo, .after = nombre) |> 
-      dplyr::mutate(odds_ratio = dplyr::if_else(condition = is.na(odds_ratio), true = 1, false = odds_ratio))
+      dplyr::mutate(odds_ratio = dplyr::if_else(condition = is.na(odds_ratio), true = 1, false = odds_ratio),
+                    odds_ratio = dplyr::if_else(condition = odds_ratio >= 10, true = NA, false = odds_ratio))
     
     
     datos_multivariado
@@ -300,7 +301,8 @@ server = function(input, output, session) {
       dplyr::select(-id) |> 
       dplyr::relocate(odds_ratio, .before  = yhat) |> 
       dplyr::relocate(grupo, .after = nombre) |> 
-      dplyr::mutate(odds_ratio = dplyr::if_else(condition = is.na(odds_ratio), true = 1, false = odds_ratio))
+      dplyr::mutate(odds_ratio = dplyr::if_else(condition = is.na(odds_ratio), true = 1, false = odds_ratio),
+                    odds_ratio = dplyr::if_else(condition = odds_ratio >= 10, true = NA, false = odds_ratio))
     
     
     datos_multivariado
@@ -315,7 +317,12 @@ server = function(input, output, session) {
   
   ### Odds Ratio
   output$grafica_logodds = renderPlotly({
-    gg = ggplot(datos(), aes(x = nombre, y = odds_ratio, fill = factor(años_datos))) +
+    gg = ggplot(datos(), aes(x = nombre, y = odds_ratio, fill = factor(años_datos),
+                             text = paste0(
+                               "<b>Respuesta:</b> ", nombre,
+                               "<br><b>Odds Ratio:</b> ", round(odds_ratio,2),
+                               "<br><b>Año:</b> ", años_datos
+                             ))) +
       geom_bar(stat = "identity", position = position_dodge()) +
       scale_fill_manual(values = c("#691c32","#b38e5d")) + 
       geom_text(aes(label = round(odds_ratio, 2), y = odds_ratio / 2),  
@@ -329,7 +336,7 @@ server = function(input, output, session) {
       theme(axis.text.x = element_text(angle = 45, hjust = 1, colour = "black", face = "bold"),
             axis.title.x = element_text(color = "black", face = "bold")) +
       geom_hline(yintercept = 1, linetype = "dashed", color = "red")
-    ggplotly(gg) |>  
+    ggplotly(gg, tooltip = "text") |>  
       config(
         modeBarButtonsToRemove = list("select2d", "lasso2d","hoverClosestCartesian", "hoverCompareCartesian","toggleSpikelines"),
         scrollZoom = TRUE,
@@ -341,7 +348,12 @@ server = function(input, output, session) {
   
   ### PDP
   output$grafica_pdp = renderPlotly({
-    gg = ggplot(datos(), aes(x = nombre, y = yhat, fill = factor(años_datos))) +
+    gg = ggplot(datos(), aes(x = nombre, y = yhat, fill = factor(años_datos),
+                             text = paste0(
+                               "<b>Respuesta:</b> ", nombre,
+                               "<br><b>Probabilidad:</b> ", round(yhat,2),
+                               "<br><b>Año:</b> ", años_datos
+                             ))) +
       geom_bar(stat = "identity", position = position_dodge()) +
       scale_fill_manual(values = c("#691c32","#b38e5d")) + 
       geom_text(aes(label = round(yhat, 2), y = yhat / 2),  
@@ -354,7 +366,7 @@ server = function(input, output, session) {
       theme_minimal(base_size = 12) +
       theme(axis.text.x = element_text(angle = 45, hjust = 1, colour = "black", face = "bold"),
             axis.title.x = element_text(color = "black", face = "bold"))
-    ggplotly(gg) |>  
+    ggplotly(gg, tooltip = "text") |>  
       config(
         modeBarButtonsToRemove = list("select2d", "lasso2d","hoverClosestCartesian", "hoverCompareCartesian","toggleSpikelines"),
         scrollZoom = TRUE,
@@ -367,13 +379,31 @@ server = function(input, output, session) {
   
   ### Odds Ratio Multivariado
   output$grafica_odd_ratio_2025 = renderPlotly({
-    gg = ggplot(datos_multivariado_2025(), aes(x = nombre, y = odds_ratio, fill = factor(grupo))) +
+    gg = ggplot(datos_multivariado_2025(), aes(x = nombre, y = odds_ratio, fill = factor(grupo),
+                                               text = paste0(
+                                                 "<b>Respuesta:</b> ", nombre,
+                                                 "<br><b>Odds Ratio:</b> ", round(odds_ratio,2),
+                                                 "<br><b>Clase:</b> ", grupo
+                                               ))) +
       geom_bar(stat = "identity", position = position_dodge()) +
       scale_fill_manual(values = c("#691c32","#b38e5d")) + 
-      geom_text(aes(label = round(odds_ratio, 2), y = odds_ratio / 2),  
-                position = position_dodge(width = 0.9),
-                size = 4,
-                color = "white") +
+      {
+        if (nrow(datos_multivariado_2025()) < 15) {
+          geom_text(
+            aes(label = round(odds_ratio, 2), y = odds_ratio / 2),  
+            position = position_dodge(width = 0.9),
+            size = 4,
+            color = "white"
+          )
+        } else {
+          geom_text(
+            aes(label = round(odds_ratio, 2), y = odds_ratio / 2),  
+            position = position_dodge(width = 0.9),
+            size = 2,
+            color = "white"
+          )
+        }
+      } +
       labs(x = gsub("_", " ", input$variable) |> stringr::str_squish() |> tools::toTitleCase(), 
            y = "Predicción",
            fill = "Año 2025") +
@@ -381,7 +411,7 @@ server = function(input, output, session) {
       theme(axis.text.x = element_text(angle = 45, hjust = 1, colour = "black", face = "bold"),
             axis.title.x = element_text(color = "black", face = "bold")) +
       geom_hline(yintercept = 1, linetype = "dashed", color = "red") 
-    ggplotly(gg) |>  
+    ggplotly(gg, tooltip = "text") |>  
       config(
         modeBarButtonsToRemove = list("select2d", "lasso2d","hoverClosestCartesian", "hoverCompareCartesian","toggleSpikelines"),
         scrollZoom = TRUE,
@@ -392,13 +422,31 @@ server = function(input, output, session) {
   })
   
   output$grafica_odd_ratio_2024 = renderPlotly({
-    gg = ggplot(datos_multivariado_2024(), aes(x = nombre, y = odds_ratio, fill = factor(grupo))) +
+    gg = ggplot(datos_multivariado_2024(), aes(x = nombre, y = odds_ratio, fill = factor(grupo),
+                                               text = paste0(
+                                                 "<b>Respuesta:</b> ", nombre,
+                                                 "<br><b>Odds Ratio:</b> ", round(odds_ratio,2),
+                                                 "<br><b>Clase:</b> ", grupo
+                                               ))) +
       geom_bar(stat = "identity", position = position_dodge()) +
       scale_fill_manual(values = c("#691c32","#b38e5d")) + 
-      geom_text(aes(label = round(odds_ratio, 2), y = odds_ratio / 2),  
-                position = position_dodge(width = 0.9),
-                size = 4,
-                color = "white") +
+      {
+        if (nrow(datos_multivariado_2024()) < 15) {
+          geom_text(
+            aes(label = round(odds_ratio, 2), y = odds_ratio / 2),  
+            position = position_dodge(width = 0.9),
+            size = 4,
+            color = "white"
+          )
+        } else {
+          geom_text(
+            aes(label = round(odds_ratio, 2), y = odds_ratio / 2),  
+            position = position_dodge(width = 0.9),
+            size = 2,
+            color = "white"
+          )
+        }
+      } +
       labs(x = gsub("_", " ", input$variable) |> stringr::str_squish() |> tools::toTitleCase(), 
            y = "Predicción",
            fill = "Año 2024") +
@@ -406,34 +454,52 @@ server = function(input, output, session) {
       theme(axis.text.x = element_text(angle = 45, hjust = 1, colour = "black", face = "bold"),
             axis.title.x = element_text(color = "black", face = "bold")) +
       geom_hline(yintercept = 1, linetype = "dashed", color = "red")
-    ggplotly(gg) |>  
+    ggplotly(gg, tooltip = "text") |>  
       config(
         modeBarButtonsToRemove = list("select2d", "lasso2d","hoverClosestCartesian", "hoverCompareCartesian","toggleSpikelines"),
         scrollZoom = TRUE,
         displaylogo = FALSE,
         doubleClick = "reset",
         locale = "es"
-      )
+      ) 
   })
   
   
   
   ### PDP Multivariado
   output$grafica_pdp_multivariado_2025 = renderPlotly({
-    gg = ggplot(datos_multivariado_2025(), aes(x = nombre, y = yhat, fill = factor(grupo))) +
+    gg = ggplot(datos_multivariado_2025(), aes(x = nombre, y = yhat, fill = factor(grupo),
+                                               text = paste0(
+                                                 "<b>Respuesta:</b> ", nombre,
+                                                 "<br><b>Probabilidad:</b> ", round(yhat,2),
+                                                 "<br><b>Clase:</b> ", grupo
+                                               ))) +
       geom_bar(stat = "identity", position = position_dodge()) +
       scale_fill_manual(values = c("#691c32","#b38e5d")) + 
-      geom_text(aes(label = round(yhat, 2), y = yhat / 2),  
-                position = position_dodge(width = 0.9),
-                size = 4,
-                color = "white") +
+      {
+        if (nrow(datos_multivariado_2025()) < 15) {
+          geom_text(
+            aes(label = round(yhat, 2), y = yhat / 2),  
+            position = position_dodge(width = 0.9),
+            size = 4,
+            color = "white"
+          )
+        } else {
+          geom_text(
+            aes(label = round(yhat, 2), y = yhat/ 2),  
+            position = position_dodge(width = 0.9),
+            size = 2,
+            color = "white"
+          )
+        }
+      } +
       labs(x = gsub("_", " ", input$variable) |> stringr::str_squish() |> tools::toTitleCase(), 
            y = "Predicción",
            fill = "Año 2025") +
       theme_minimal(base_size = 12) +
       theme(axis.text.x = element_text(angle = 45, hjust = 1, colour = "black", face = "bold"),
             axis.title.x = element_text(color = "black", face = "bold"))
-    ggplotly(gg) |>  
+    ggplotly(gg, tooltip = "text") |>  
       config(
         modeBarButtonsToRemove = list("select2d", "lasso2d","hoverClosestCartesian", "hoverCompareCartesian","toggleSpikelines"),
         scrollZoom = TRUE,
@@ -444,20 +510,38 @@ server = function(input, output, session) {
   })
   
   output$grafica_pdp_multivariado_2024 = renderPlotly({
-    gg = ggplot(datos_multivariado_2024(), aes(x = nombre, y = yhat, fill = factor(grupo))) +
+    gg = ggplot(datos_multivariado_2024(), aes(x = nombre, y = yhat, fill = factor(grupo),
+                                               text = paste0(
+                                                 "<b>Respuesta:</b> ", nombre,
+                                                 "<br><b>Probabilidad:</b> ", round(yhat,2),
+                                                 "<br><b>Clase:</b> ", grupo
+                                               ))) +
       geom_bar(stat = "identity", position = position_dodge()) +
       scale_fill_manual(values = c("#691c32","#b38e5d")) + 
-      geom_text(aes(label = round(yhat, 2), y = yhat / 2),  
-                position = position_dodge(width = 0.9),
-                size = 4,
-                color = "white") +
+      {
+        if (nrow(datos_multivariado_2024()) < 15) {
+          geom_text(
+            aes(label = round(yhat, 2), y = yhat / 2),  
+            position = position_dodge(width = 0.9),
+            size = 4,
+            color = "white"
+          )
+        } else {
+          geom_text(
+            aes(label = round(yhat, 2), y = yhat/ 2),  
+            position = position_dodge(width = 0.9),
+            size = 2,
+            color = "white"
+          )
+        }
+      } + 
       labs(x = gsub("_", " ", input$variable) |> stringr::str_squish() |> tools::toTitleCase(), 
            y = "Predicción",
            fill = "Año 2024") +
       theme_minimal(base_size = 12) +
       theme(axis.text.x = element_text(angle = 45, hjust = 1, colour = "black", face = "bold"),
             axis.title.x = element_text(color = "black", face = "bold"))
-    ggplotly(gg) |>  
+    ggplotly(gg, tooltip = "text") |>  
       config(
         modeBarButtonsToRemove = list("select2d", "lasso2d","hoverClosestCartesian", "hoverCompareCartesian","toggleSpikelines"),
         scrollZoom = TRUE,
@@ -530,6 +614,12 @@ server = function(input, output, session) {
           <li>Valores menores que 1 señalan una asociación negativa.</li>
           <li>Valores mayores que 1 indican una asociación positiva.</li>
           </ul>
+          
+          <p> Del modelo mostrado: </p>
+          <ul>
+          <li> El pseudo \\(R\\) cuadrado de McFadden tuvo valor de 0.4230715 en el año 2025.</li>
+          <li> El pseudo \\(R\\) cuadrado de McFadden tuvo valor de 0.4311036 en el año 2024.</li>
+          </ul>
         ")
       )
     } else if (input$nav == "PDP") {
@@ -556,9 +646,13 @@ server = function(input, output, session) {
       
           <p>donde \\( \\mathbf{z}_{i,c} \\) representa los valores observados de las demás variables en la muestra.</p>
       
-          <p>Así, el PDP muestra cómo la variable de interés afecta la predicción, manteniendo constantes (en promedio) las demás variables del modelo.</p>
-          
           <p>Ademas la funcion trabajada aplica un transformacion de los datos a la escala de probabilidad, es decir, tenemos la probabilidad promedio predicha del evento de interés para cada valor, considerando los valores promedio de todas las demás variables del modelo.</p>
+          
+          <p> Del modelo mostrado: </p>
+          <ul>
+          <li> El pseudo \\(R\\) cuadrado de McFadden tuvo valor de 0.423 en el año 2025.</li>
+          <li> El pseudo \\(R\\) cuadrado de McFadden tuvo valor de 0.431 en el año 2024.</li>
+          </ul>
         ")
       )
     } else if (input$nav == "Odds Ratio Multivariado") {
@@ -593,6 +687,12 @@ server = function(input, output, session) {
           <li>Valores menores que 1 señalan una asociación negativa.</li>
           <li>Valores mayores que 1 indican una asociación positiva.</li>
           </ul>
+          
+          <p> Del modelo mostrado: </p>
+          <ul>
+          <li> El pseudo \\(R\\) cuadrado de McFadden tuvo valor de 0.269 en el año 2025.</li>
+          <li> El pseudo \\(R\\) cuadrado de McFadden tuvo valor de 0.250 en el año 2024.</li>
+          </ul>
         ")
       )
     } else if (input$nav == "PDP Multivariado") {
@@ -619,9 +719,13 @@ server = function(input, output, session) {
       
           <p>donde \\( \\mathbf{z}_{i,c} \\) representa los valores observados de las demás variables en la muestra.</p>
       
-          <p>Así, el PDP muestra cómo la variable de interés afecta la predicción, manteniendo constantes (en promedio) las demás variables del modelo.</p>
-          
           <p>Ademas la funcion trabajada aplica un transformacion de los datos a la escala de probabilidad, es decir, tenemos la probabilidad promedio predicha del evento de interés para cada valor, considerando los valores promedio de todas las demás variables del modelo.</p>
+          
+          <p> Del modelo mostrado: </p>
+          <ul>
+          <li> El pseudo \\(R\\) cuadrado de McFadden tuvo valor de 0.269 en el año 2025.</li>
+          <li> El pseudo \\(R\\) cuadrado de McFadden tuvo valor de 0.250 en el año 2024.</li>
+          </ul>
         ")
       )
     } else {

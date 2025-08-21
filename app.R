@@ -6,8 +6,8 @@ library(pdp)
 library(DescTools)
 library(shinyWidgets)  
 
-#source("binary_logistic_regression.R")
-#source("Multinomial carga.R")
+source("binary_logistic_regression.R")
+source("Multinomial carga.R")
 
 
 variables = names(binary.data2025)[!names(binary.data2025) %in% c("P19", "SbjNum", "Latitude", "Longitude", "PESOF", "P20", "edad")]
